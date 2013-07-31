@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>AudioViz.js - See What You're Hearing!</title>
+    <link rel="stylesheet" href="misc/bootstrap.min.css" type="text/css" />
+    <style>
+      body { margin: 0px; padding: 0px; }
+      .header h1 {font-size:4em;line-height:1.2em;}
+      h1 {color:#00a497}
+      h2 {margin:25px 0 15px}
+      p {margin:4px 0}
+      button {margin-left:2px}
+      footer {margin-bottom:15px}
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>audioviz.js</h1>
+      </div>
+      <hr/>
+
+      <div class="row" style="display: table">
+        <div class="span4">
+          <p>Audioviz.js is a Node.JS program that creates a frequency spectrogram in real-time from any ALSA audio source on the server.</p>
+          <ol>
+            <li><h4>Processing: <button id="startid" type="button">Start</button></h4></li>
+            <li><h4>Processing: <button id="stopid"  type="button">Stop</button></h4></li>
+            <li><h4>Processing: <button id="clearid" type="button">Clear</button></h4></li>
+            <li><h4>Change samplerate</h4></li>
+          </ol>
+        </div>
+
+        <div class="span4">
+          <canvas id="SpectroCanvas" width="600" height="400"></canvas>
+        </div>
+      </div>
+
+      <div class="row" style="display: table">
+        <div class="span4">
+          <p> </p>
+        </div>
+      </div>
+    </div>
+
+    <script src="http://localhost:8080/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io.connect('http://localhost:8080');
+        socket.on('news', function (data) {
+        console.log(data);
+      });
+      
+      window.animateOn = false;
+
+      var el;
+      el = document.getElementById("startid");
+      if (el.addEventListener)
+          el.addEventListener("click", avStart, false);
+      else if (el.attachEvent)
+          el.attachEvent('onclick', avStart);
+      el = document.getElementById("stopid");
+      if (el.addEventListener)
+          el.addEventListener("click", avStop, false);
+      else if (el.attachEvent)
+          el.attachEvent('onclick', avStop);
+      el = document.getElementById("clearid");
+      if (el.addEventListener)
+          el.addEventListener("click", avClear, false);
+      else if (el.attachEvent)
+          el.attachEvent('onclick', avClear);
+
+      function avStart() {
+        window.animateOn = true;
+        console.log('Start Button pressed.');
+        socket.emit('control event', { cmd: 'start' });
+        animate();
+      }
+
+      function avStop() {
+        window.animateOn = false;
+        console.log('Stop Button pressed.');
+        socket.emit('control event', { cmd: 'stop' });
+      }
+
+      function avClear() {
+        var canvas = document.getElementById('SpectroCanvas');
+        var ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        console.log('Clear Button pressed.');
+        socket.emit('control event', { cmd: 'clear' });
+      }
+
+      window.requestAnimFrame = (function(callback) {
+        return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+        function(callback) {
+          window.setTimeout(callback, 1000 / 60);
+        };
+      })();
+
+      function animate() {
+        var canvas = document.getElementById('SpectroCanvas');
+        var ctx = canvas.getContext('2d');
+        var x, y;
+        var r,g,b;
+
+        // update
+
+        // clear
+        //ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // draw stuff
+
+        // draw random dots
+        x = Math.floor(Math.random()*canvas.width);
+        y = Math.floor(Math.random()*canvas.height);
+        r = Math.floor(Math.random()*256);
+        g = Math.floor(Math.random()*256);
+        b = Math.floor(Math.random()*256);
+        ctx.fillStyle = "rgba(" + r + ", " + g + ", " + b + ", 1)";
+        ctx.beginPath();
+        ctx.rect( x, y, 3, 3);
+        ctx.closePath(); ctx.fill();
+
+        // request new frame
+        requestAnimFrame(function() {
+          if ( animateOn === true ) animate();
+        });
+      }
+      if ( animateOn === true ) animate();
+
+    </script>
+  </body>
+</html>

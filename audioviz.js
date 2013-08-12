@@ -43,15 +43,12 @@ for ( i=0; i<nachunk; i++) {
    HanWin[i] = 0.5 * (1-Math.cos(twopi * i /(nachunk-1)));
 }
 
-console.log(__dirname);
-
   var fsrv = new static.Server('./');
 
   function fileHandler(req, res) {
     req.addListener('end', function () {
       console.log("Request URL: " + req.url);
       fsrv.serve(req, res);
-//  });
     }).resume();
   }
 
@@ -117,6 +114,7 @@ console.log(__dirname);
         im = oachunk[2*i+1];
         tmp = ( 255 * Math.sqrt((re*re)+(im*im)) ) / max_eng;
         if ( tmp > 255 ) { tmp = 255; }
+        if ( tmp <  15 ) { tmp = 0; }
         SpectraSlice[i] = Math.floor(tmp);
       }
 

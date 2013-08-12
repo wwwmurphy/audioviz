@@ -1,0 +1,13 @@
+{
+  "name": "audioviz",
+  "description": "Show Realtime Power Spectra of Audio Stream",
+  "author": "Walter Murphy <walter.murphy@gmail.com>",
+  "version": "0.0.1",
+  "dependencies": {
+    "alsa": "0.0.2",
+    "socket.io": "0.9.16",
+    "socket.io-client": "0.9.16",
+    "node-static": "0.7.0"
+  },
+  "engine": "node >= 0.10.13"
+}

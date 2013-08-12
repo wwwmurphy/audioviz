@@ -3,15 +3,21 @@
   <head>
     <meta charset="utf-8">
     <title>AudioViz.js - See What You're Hearing!</title>
-    <link rel="stylesheet" href="bootstrap.min.css" type="text/css" />
     <style>
-      body { margin: 0px; padding: 0px; }
+      .row { margin-left:-20px; zoom:1; } 
+      .container { margin-right:auto; margin-left:auto; zoom:1; } 
+      body { font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+          font-size:13px; line-height:18px; color:#333;
+          background-color:#fff; margin:0; padding:0;
+      } 
       .header h1 {font-size:4em;line-height:1.2em;}
       h1 {color:#00a497}
       h2 {margin:25px 0 15px}
       p {margin:4px 0}
-      button {margin-left:2px}
+      button,input,select,textarea { font-size:100%; vertical-align:middle; margin:0; } 
       footer {margin-bottom:15px}
+      [class*="span"] { float:left; margin-left:20px; }
+      .span4 { width:300px; }
     </style>
   </head>
 
@@ -46,7 +52,7 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-      var socket = io.connect('http://localhost:8081');
+      var socket = io.connect();
       socket.on('freqstep', function (data) {
         console.log(data);
       });
@@ -128,7 +134,7 @@
           }
           ctx.fillStyle = "rgba(" + r + ", " + g + ", " + b + ", 0.9)";
           ctx.beginPath();
-          ctx.rect( x, y, 2, 5);
+          ctx.rect( x, y, 3, 5);
           ctx.closePath();
           ctx.fill();
         }
@@ -142,7 +148,7 @@
           spot(x, y, data[ymax-y]);
         }
         // advance horizontally to the next slice.
-        x= x+1;
+        x= x+3;
         if ( x > canvas.width ) {
           // put horizontal scrolling in here later, if possible.
           avClear();
